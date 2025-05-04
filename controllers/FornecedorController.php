@@ -89,6 +89,55 @@ class FornecedorController extends Controller
         $this->loadView('fornecedor-add', $data);
     }
 
+    public function edit($id)
+    {
+        $data = array();
+        $f = new Fornecedor();
+
+        if (! empty($_GET['busca'])) {
+            $s = addslashes(trim($_GET['busca']));
+        }
+
+        $deuCerto = false;
+
+        $fornecedor = [];
+        $id = addslashes($id);
+
+        if (! empty($id)) {
+
+            $fornecedor = $f->findById($id);
+
+            if (count($fornecedor) > 0) {
+                $data['fornecedor'] = $fornecedor;
+                $this->loadView('fornecedor-edit', $data);
+            }
+
+            if (isset($_POST['name'])) {
+                $name = addslashes($_POST['name']);
+                $url = addslashes($_POST['url']);
+                $deuCerto = $f->edit($name, $url, $id);
+
+                if ($deuCerto) {
+                    $_SESSION['fornecedor_msg'] = 'Fornecedor editado com Sucesso!';
+                } else {
+                    $_SESSION['fornecedor_msg'] = 'Falha ao editar fornecedor!';
+                }
+
+                header('Location: '.BASE_URL.'fornecedor');
+                exit;
+            } 
+            
+            
+        }
+
+
+        if ($deuCerto) {
+            $_SESSION['fornecedor_msg'] = 'Fornecedor editado com Sucesso!';
+        } else {
+            $_SESSION['fornecedor_msg'] = 'Falha ao editar fornecedor!';
+        }
+    }
+
     public function delete($id) 
     {
         $data = array();

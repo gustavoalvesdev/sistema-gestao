@@ -29,6 +29,22 @@ class Fornecedor extends Model
 
     }
 
+    public function findById($id) 
+    {
+        $fornecedor = [];
+
+        $sql = "SELECT * FROM manufacturers WHERE id = :id";
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':id', $id);
+        $sql->execute();
+
+        if ($sql->rowCount() > 0) {
+            $fornecedor = $sql->fetch();
+        }
+
+        return $fornecedor;
+    }
+
     public function addFornecedor($name, $url)
     {
         $sql = 'INSERT INTO manufacturers (name, url) VALUES (:name, :url)';
@@ -37,11 +53,19 @@ class Fornecedor extends Model
         $sql->bindValue(':name', $name);
         $sql->bindValue(':url', $url);
 
-        $sql->execute();
-
-        return true;
+       return  $sql->execute();
 
     }
+
+    public function edit($name, $url, $id)
+    {
+        $sql = 'UPDATE manufacturers SET name = :name, url = :url WHERE id = :id';
+        $sql = $this->db->prepare($sql);
+        $sql->bindValue(':name', $name);
+        $sql->bindValue(':url', $url);
+        $sql->bindValue(':id', $id);
+        return $sql->execute();
+    }   
 
     public function delete($id)
     {
